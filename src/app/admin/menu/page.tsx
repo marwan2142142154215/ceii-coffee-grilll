@@ -12,6 +12,8 @@ export default function AdminMenu() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Product | null>(null)
   const [form, setForm] = useState({ name: '', description: '', price: '', category_id: '', image_url: '', is_available: true, order: '' })
+  const [showCatForm, setShowCatForm] = useState(false)
+  const [catForm, setCatForm] = useState({ name: '', icon: '' })
 
   useEffect(() => {
     loadData()
@@ -74,6 +76,26 @@ export default function AdminMenu() {
     const { error } = await supabase.from('products').delete().eq('id', id)
       if (error) { toast.error('Gagal menghapus: ' + error.message); return }
     toast.success('Produk dihapus')
+    loadData()
+  }
+
+  async function saveCategory() {
+    if (!catForm.name.trim()) { toast.error('Nama kategori wajib diisi'); return }
+    const { error } = await supabase.from('categories').insert({ name: catForm.name.trim(), icon: catForm.icon.trim() || null, order: categories.length })
+    if (error) { toast.error('Gagal: ' + error.message); return }
+    toast.success('Kategori ditambah')
+    setShowCatForm(false)
+    setCatForm({ name: '', icon: '' })
+    loadData()
+  }
+
+  async function removeCategory(id: string) {
+    const count = products.filter(p => p.category_id === id).length
+    if (count > 0 && !confirm(`Hapus "${categories.find(c => c.id === id)?.name}"? ${count} produk akan kehilangan kategori ini.`)) return
+    if (count === 0 && !confirm(`Hapus kategori "${categories.find(c => c.id === id)?.name}"?`)) return
+    const { error } = await supabase.from('categories').delete().eq('id', id)
+    if (error) { toast.error('Gagal: ' + error.message); return }
+    toast.success('Kategori dihapus')
     loadData()
   }
 
@@ -152,16 +174,47 @@ export default function AdminMenu() {
         </div>
       )}
 
-      <h2 style={{ fontSize: 16, fontWeight: 'bold', color: '#333', margin: '20 0 12' }}>Kategori</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+        <h2 style={{ fontSize: 16, fontWeight: 'bold', color: '#333', margin: 0 }}>Kategori</h2>
+        <button onClick={() => { setShowCatForm(true); setCatForm({ name: '', icon: '' }) }}
+          style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 12px', background: '#D4A73C', color: '#000', border: 'none', borderRadius: 8, fontWeight: 'bold', fontSize: 12, cursor: 'pointer' }}>
+          <Plus size={14} /> Tambah
+        </button>
+      </div>
+
+      {showCatForm && (
+        <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
+          <input value={catForm.name} onChange={e => setCatForm(f => ({ ...f, name: e.target.value }))}
+            placeholder="Nama kategori"
+            style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #ddd', fontSize: 12, outline: 'none', width: 160 }} />
+          <input value={catForm.icon} onChange={e => setCatForm(f => ({ ...f, icon: e.target.value }))}
+            placeholder="Ikon (emoji)"
+            style={{ padding: '6px 10px', borderRadius: 8, border: '1px solid #ddd', fontSize: 12, outline: 'none', width: 80 }} />
+          <button onClick={saveCategory}
+            style={{ padding: '6px 14px', background: '#D4A73C', color: '#000', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 'bold', cursor: 'pointer' }}>
+            <Check size={14} />
+          </button>
+          <button onClick={() => setShowCatForm(false)}
+            style={{ padding: '6px 14px', background: '#eee', color: '#666', border: 'none', borderRadius: 8, fontSize: 12, cursor: 'pointer' }}>
+            <X size={14} />
+          </button>
+        </div>
+      )}
+
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 20 }}>
         {categories.map(c => (
-          <span key={c.id} style={{
-            padding: '4px 12px', background: '#fff', borderRadius: 20,
+          <div key={c.id} style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            padding: '4px 8px 4px 12px', background: '#fff', borderRadius: 20,
             border: '1px solid #e0ddd5', fontSize: 12, color: '#555',
           }}>
-            {c.icon && <span style={{ marginRight: 4 }}>{c.icon}</span>}
+            {c.icon && <span style={{ marginRight: 2 }}>{c.icon}</span>}
             {c.name}
-          </span>
+            <button onClick={() => removeCategory(c.id)}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#e74c3c', padding: '2px', display: 'flex' }}>
+              <X size={12} />
+            </button>
+          </div>
         ))}
       </div>
 
