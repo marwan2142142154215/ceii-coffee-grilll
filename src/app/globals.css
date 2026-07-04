@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+:root {
+  --theme-primary: #7A1E1E;
+  --theme-secondary: #3D0C0C;
+  --theme-accent: #D4A73C;
+  --theme-bg: #0D0D0D;
+  --theme-surface: #1A1A1A;
+  --theme-text: #F5F0E8;
+  --theme-text-secondary: #B8AFA0;
+  --theme-border: #D4A73C;
+  --theme-promo: #D4A73C;
+  --theme-glow: rgba(212, 167, 60, 0.3);
+  --theme-font: serif;
+}
+
+@theme inline {
+  --color-background: var(--theme-bg);
+  --color-foreground: var(--theme-text);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--theme-bg);
+  color: var(--theme-text);
+  font-family: var(--font-sans);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--theme-glow); }
+  50% { box-shadow: 0 0 20px var(--theme-glow); }
+}
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  75% { transform: translateX(3px); }
+}
+
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  60% { transform: translate(-1px, 1px); }
+  80% { transform: translate(1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-pop {
+  animation: pop 0.3s ease-out;
+}
+
+.animate-shake {
+  animation: shake 0.3s ease-out;
+}
+
+.animate-glitch {
+  animation: glitch 0.5s ease-out;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

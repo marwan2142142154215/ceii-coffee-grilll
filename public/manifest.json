@@ -1,0 +1,12 @@
+{
+  "name": "CEII Coffee & Grill",
+  "short_name": "CEII",
+  "description": "Menu Digital CEII Coffee & Grill",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0D0D0D",
+  "theme_color": "#0D0D0D",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "48x48", "type": "image/x-icon" }
+  ]
+}
